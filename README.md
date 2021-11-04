@@ -1,7 +1,7 @@
 # CISC7016
 ## PPT 
 
-
+[PPT](./ppt/NCA-GAN.pptx)
 
 ## Code
 
