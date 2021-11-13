@@ -1,3 +1,7 @@
+code/.idea/
+code/models_da/*.pt
+code/imoutputs/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

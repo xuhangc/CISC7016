@@ -8,6 +8,7 @@ from torch.utils.data import TensorDataset, DataLoader
 import matplotlib.pyplot as plt
 
 import numpy as np
+import cv2
 
 from automata import DiffAutomata, Encoder
 
@@ -76,8 +77,8 @@ def main():
     da = DiffAutomata()
     enc = Encoder(28 * 28, 256, 50)
 
-    load = torch.load("./models_da/da_autoencoder_persistent/da_autoencoder_persistent_9000.pt")
-    # load = torch.load("./models/autoencoder_persistent_8000.pt")
+    # load = torch.load("./models_da/da_autoencoder_persistent/da_autoencoder_persistent_9000.pt")
+    load = torch.load("./models/autoencoder_persistent_8000.pt")
     enc.load_state_dict(load['encoder_state_dict'])
     da.load_state_dict(load['model_state_dict'])
 
@@ -96,7 +97,7 @@ def main():
     discriminator_optimizer = optim.Adam(d.parameters(), lr=0.0002, betas=(0.5, 0.99), weight_decay=0.02)
     generator_optimizer = optim.Adam(g.parameters(), lr=0.0002, betas=(0.5, 0.99))
 
-    for epoch in range(200):
+    for epoch in range(2000):
         print("saving model")
         torch.save({
             "d_state_dict": d.state_dict(),
@@ -157,7 +158,7 @@ def main():
 
                 avg += loss_g
 
-            print(loss_d.item(), avg / gsteps, gsteps)
+            # print(loss_d.item(), avg / gsteps, gsteps)
 
             if avg / gsteps > -0.7 and c > 500:
                 gsteps = 2
@@ -180,12 +181,16 @@ def main():
 
                         images = da.forward(images, mask.to(device), update_mask.to(device))
 
-                    if c % 2000 == 0:
+                    if c == 450 and epoch > 50:
                         for i in range(20):
                             # plt.subplot(4, 5, i + 1)
-                            plt.cla()
-                            plt.imshow(images[i, 0, :, :].view(28, 28).cpu().numpy())
-                            plt.savefig('./imoutputs/' + str(name) + '.png')
+                            # plt.cla()
+                            # plt.imshow(images[i, 0, :, :].view(28, 28).cpu().numpy())
+                            gray = images[i, 0, :, :].view(28, 28).cpu().numpy() * 255
+                            # cv2.imshow('img', images[i, 0, :, :].view(28, 28).cpu().numpy())
+                            cv2.imwrite('./imoutputs/' + str(name) + '.png', gray)
+                            # cv2.waitKey(0)
+                            # plt.savefig('./imoutputs/' + str(name) + '.png')
                             name += 1
                         plt.pause(0.0001)
 
