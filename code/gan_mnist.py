@@ -97,8 +97,7 @@ def main():
     discriminator_optimizer = optim.Adam(d.parameters(), lr=0.0002, betas=(0.5, 0.99), weight_decay=0.02)
     generator_optimizer = optim.Adam(g.parameters(), lr=0.0002, betas=(0.5, 0.99))
 
-    for epoch in range(2000):
-        print("saving model")
+    for epoch in range(1500):
         torch.save({
             "d_state_dict": d.state_dict(),
             "g_state_dict": g.state_dict(),
@@ -181,7 +180,7 @@ def main():
 
                         images = da.forward(images, mask.to(device), update_mask.to(device))
 
-                    if c == 450 and epoch > 50:
+                    if c % 450 == 0 and c > 0 and epoch >= 1000:
                         for i in range(20):
                             # plt.subplot(4, 5, i + 1)
                             # plt.cla()
